@@ -41,9 +41,9 @@ class DataOperations:
     @staticmethod
     def count_appearances_in_episodes(characters):
         characters_in_episodes = (characters
-                                  .groupby('name')
+                                  .group_by('name')
                                   .count()
-                                  .sort('count')
+                                  .sort('count', descending=True)
                                   )
 
         return characters_in_episodes
