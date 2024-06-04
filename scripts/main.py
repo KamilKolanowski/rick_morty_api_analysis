@@ -15,8 +15,8 @@ class DataOperations:
         characters_cols_list = ["id", "name", "status", "species", "gender", "location", "episode"]
         characters_selected = characters_data.select(characters_cols_list)
         characters = (characters_selected
-                      .with_columns(characters_selected['location'].map_elements(lambda x: x['name']
-        if x is not None else None))
+                      .with_columns(characters_selected['location']
+                                    .map_elements(lambda x: x['name'] if x is not None else None))
                       .explode('episode')
                       .with_columns(pl.col('episode')
                                     .str
