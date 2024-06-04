@@ -1,5 +1,5 @@
-from typing import List, Any
 from APIConnector import APIConnector
+from typing import List, Any
 import polars as pl
 import os
 
