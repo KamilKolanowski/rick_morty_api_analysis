@@ -1,12 +1,13 @@
 import requests
 import dotenv
+import os
 
 dotenv.load_dotenv()
 
 
 class APIConnector:
-    def __init__(self, api_url):
-        self.api_url = api_url
+    def __init__(self):
+        self.api_url = os.getenv('API_URL')
 
     @staticmethod
     def create_headers():
