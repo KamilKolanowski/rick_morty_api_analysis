@@ -86,6 +86,21 @@ class DataOperations:
             .sort('season')
         )
 
+    @staticmethod
+    def get_episodes_per_year(episodes):
+        return (
+            episodes
+            .select(['episode', 'air_date'])
+            .with_columns(
+                pl.col('air_date')
+                .str.extract(r', (\d{4})', 1)
+                .alias('year')
+            )
+            .group_by('year')
+            .agg(pl.count('episode').alias('no_of_episodes_per_year'))
+            .sort('year', descending=True)
+        )
+
     def write_results(self):
         main_dir = '../results'
         characters_episodes_locations = self.get_joined_characters_episodes_locations(self.filtered_characters,
@@ -98,10 +113,13 @@ class DataOperations:
         appearances_in_episodes.write_csv(f'{main_dir}/appearances_in_episodes.csv')
 
         characters_per_location = self.get_no_of_characters_per_location(self.filtered_characters)
-        characters_per_location.write_csv(f'{main_dir}/characters_per_location')
+        characters_per_location.write_csv(f'{main_dir}/characters_per_location.csv')
 
         characters_per_season = self.get_no_of_characters_per_season(characters_episodes_locations)
-        characters_per_season.write_csv(f'{main_dir}/characters_per_season')
+        characters_per_season.write_csv(f'{main_dir}/characters_per_season.csv')
+
+        episodes_per_year = self.get_episodes_per_year(self.episodes)
+        episodes_per_year.write_csv(f'{main_dir}/episodes_per_year.csv')
 
 
 if __name__ == "__main__":
