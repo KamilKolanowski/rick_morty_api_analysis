@@ -23,17 +23,14 @@ class APIConnector:
         return response.json()
 
     def get_paginated_data(self, endpoint):
-        page = 1
         all_data = []
+        page = 1
 
-        while True:
-            response = self.parse_json(endpoint, page)
-            results = response.get('results', [])
+        while results := self.parse_json(endpoint, page).get('results', []):
+            all_data.extend(results)
+            page += 1
 
             if not results:
                 break
-
-            all_data.extend(results)
-            page += 1
 
         return all_data
