@@ -39,9 +39,11 @@ class DataOperations:
     def count_appearances_in_episodes(characters):
         characters_in_episodes = (
                                   characters
+                                  .select('name', 'episode')
+                                  .unique()
                                   .with_columns(pl.col('name').alias('Name'))
                                   .group_by('Name')
-                                  .agg(pl.count().alias('Appearances in episodes'))
+                                  .agg(pl.count('episode').alias('Appearances in episodes'))
                                   .sort('Appearances in episodes', descending=True)
                                   )
 
@@ -69,7 +71,7 @@ class DataOperations:
     def get_no_of_characters_per_location(characters):
         return (
             characters
-            .drop('episode')
+            .select('name', 'location')
             .unique()
             .with_columns(pl.col('location').alias('Location'))
             .group_by('Location')
@@ -94,6 +96,7 @@ class DataOperations:
         return (
             episodes
             .select(['episode', 'air_date'])
+            .unique()
             .with_columns(
                 pl.col('air_date')
                 .str.extract(r', (\d{4})', 1)
