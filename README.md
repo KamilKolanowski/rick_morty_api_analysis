@@ -1,6 +1,8 @@
 # Rick and Morty Data Analysis
 
-Welcome to the Rick and Morty Data Analysis project! This project fetches data from the Rick and Morty API and performs various analyses to gain insights into the show's characters, locations, seasons, and episodes.
+Welcome to the Rick and Morty Data Analysis project! This project fetches data from the Rick and Morty API and performs various analyses to gain insights into the show's characters, locations, seasons, and episodes. 
+
+Additionally, visualizations are done with color palette matching "Rick and Morty" colors.
 
 ## Table of Contents
 - [Overview](#overview)
