@@ -25,8 +25,7 @@ class DataOperations:
         characters_selected = characters_data.select(characters_cols_list)
 
         characters = (characters_selected
-                      .with_columns(characters_selected['location']
-                                    .map_elements(lambda x: x['name'] if x is not None else None))
+                      .with_columns(pl.col('location').struct.field('name').alias('location'))
                       .explode('episode')
                       .with_columns(pl.col('episode')
                                     .str
