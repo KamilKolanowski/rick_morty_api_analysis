@@ -31,13 +31,13 @@ We calculate the total number of appearances for each character across all episo
 
 ![plot](./results/images/Characters_appearances.png)
 
-### Characters per Location
-We determine the number of characters associated with each location.
+### Unique Characters per Season
+We find out how many unique characters appeared in each season of the show.
 
 ![plot](./results/images/Characters_seasons.png)
 
-### Unique Characters per Season
-We find out how many unique characters appeared in each season of the show.
+### Characters per Location
+We determine the number of characters associated with each location.
 
 ![plot](./results/images/Inhabited_locations.png)
 
