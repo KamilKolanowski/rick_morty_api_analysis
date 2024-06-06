@@ -14,6 +14,12 @@ This project analyzes data from the Rick and Morty API to answer several interes
 - How many unique characters were in each season
 - How many episodes were released per year
 
+## Technology
+- Python
+  - Polars
+  - Matplotlib
+  - Seaborn
+
 ## Data Sources
 The data for this analysis is fetched from the [Rick and Morty API](https://rickandmortyapi.com/). This API provides comprehensive information about characters, episodes, locations, and more.
 
