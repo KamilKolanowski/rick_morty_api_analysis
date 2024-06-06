@@ -89,7 +89,7 @@ class DataOperations:
             .unique()
             .with_columns(pl.col('episode').str.slice(0, 3).alias('Season'))
             .group_by('Season')
-            .agg(pl.count('name').alias('Characters per season'))
+            .agg(pl.count('name').alias('Characters'))
             .sort('Season')
             .limit(5)
         )
@@ -154,5 +154,5 @@ class DataOperations:
 
         self.draw_bar_plot('Name', 'Appearances in episodes', appearances_in_episodes, 'TOP 5 characters appearances')
         self.draw_bar_plot('Location', 'Characters per location', characters_per_location, 'TOP 5 inhabited locations')
-        self.draw_bar_plot('Season', 'Characters per season', characters_per_season, 'Characters per season')
+        self.draw_bar_plot('Season', 'Characters', characters_per_season, 'Characters per season')
         self.draw_bar_plot('Year', 'Episodes', episodes_per_year, 'Episodes per year')
