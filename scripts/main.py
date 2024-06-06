@@ -41,7 +41,8 @@ class DataOperations:
     def count_appearances_in_episodes(characters):
         characters_in_episodes = (
                                   characters
-                                  .group_by('name')
+                                  .with_columns(pl.col('name').alias('Name'))
+                                  .group_by('Name')
                                   .agg(pl.count().alias('Appearances in episodes'))
                                   .sort('Appearances in episodes', descending=True)
                                   )
@@ -72,7 +73,8 @@ class DataOperations:
             characters
             .drop('episode')
             .unique()
-            .group_by('location')
+            .with_columns(pl.col('location').alias('Location'))
+            .group_by('Location')
             .agg(pl.count('name').alias('Characters per location'))
             .sort('Characters per location', descending=True)
         )
@@ -83,10 +85,10 @@ class DataOperations:
             characters
             .select(['name', 'episode'])
             .unique()
-            .with_columns(pl.col('episode').str.slice(0, 3).alias('season'))
-            .group_by('season')
+            .with_columns(pl.col('episode').str.slice(0, 3).alias('Season'))
+            .group_by('Season')
             .agg(pl.count('name').alias('Characters per season'))
-            .sort('season')
+            .sort('Season')
         )
 
     @staticmethod
@@ -97,15 +99,15 @@ class DataOperations:
             .with_columns(
                 pl.col('air_date')
                 .str.extract(r', (\d{4})', 1)
-                .alias('year')
+                .alias('Year')
             )
-            .group_by('year')
+            .group_by('Year')
             .agg(pl.count('episode').alias('Episodes per year'))
-            .sort('year', descending=True)
+            .sort('Year', descending=True)
         )
 
     @staticmethod
-    def draw_bar_plot(x_axis, y_axis, data):
+    def draw_bar_plot(x_axis, y_axis, data, title):
         rick_and_morty_palette = ['#FF7F50', '#87CEEB', '#ADFF2F', '#FFD700', '#DA70D6']
         data = data.limit(5).to_pandas()
 
@@ -116,6 +118,7 @@ class DataOperations:
                            data=data,
                            palette=rick_and_morty_palette)
 
+
         for p in plot.patches:
             plot.annotate(format(p.get_height(), '.0f'),
                           (p.get_x() + p.get_width() / 2., p.get_height()),
@@ -124,6 +127,7 @@ class DataOperations:
                           textcoords='offset points')
 
         plt.xticks(rotation=35, ha='right')
+        plt.title(title)
         plt.show()
 
     def get_results(self):
@@ -144,10 +148,10 @@ class DataOperations:
         characters_per_season.write_csv(f'{main_dir}/characters_per_season.csv')
         episodes_per_year.write_csv(f'{main_dir}/episodes_per_year.csv')
 
-        self.draw_bar_plot('name', 'Appearances in episodes', appearances_in_episodes)
-        self.draw_bar_plot('location', 'Characters per location', characters_per_location)
-        self.draw_bar_plot('season', 'Characters per season', characters_per_season)
-        self.draw_bar_plot('year', 'Episodes per year', episodes_per_year)
+        self.draw_bar_plot('Name', 'Appearances in episodes', appearances_in_episodes, 'TOP 5 characters appearances')
+        self.draw_bar_plot('Location', 'Characters per location', characters_per_location, 'TOP 5 inhabited locations')
+        self.draw_bar_plot('Season', 'Characters per season', characters_per_season, 'Characters per season')
+        self.draw_bar_plot('Year', 'Episodes per year', episodes_per_year, 'TOP 5 years of episodes')
 
 
 if __name__ == "__main__":
