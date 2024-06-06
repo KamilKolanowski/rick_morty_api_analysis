@@ -6,11 +6,6 @@ Welcome to the Rick and Morty Data Analysis project! This project fetches data f
 - [Overview](#overview)
 - [Data Sources](#data-sources)
 - [Analyses Performed](#analyses-performed)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Results](#results)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Overview
 This project analyzes data from the Rick and Morty API to answer several interesting questions about the show, such as:
