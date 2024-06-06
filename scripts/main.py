@@ -131,7 +131,7 @@ class DataOperations:
         plt.show()
 
     def get_results(self):
-        main_dir = '../results'
+        main_dir = '../results/csv_files'
 
         characters_episodes_locations = self.get_joined_characters_episodes_locations(self.filtered_characters,
                                                                                       self.episodes,
