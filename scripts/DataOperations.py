@@ -76,8 +76,8 @@ class DataOperations:
             .unique()
             .with_columns(pl.col('location').alias('Location'))
             .group_by('Location')
-            .agg(pl.count('name').alias('Characters per location'))
-            .sort('Characters per location', descending=True)
+            .agg(pl.count('name').alias('Characters'))
+            .sort('Characters', descending=True)
             .limit(5)
         )
 
@@ -99,7 +99,6 @@ class DataOperations:
         return (
             episodes
             .select(['episode', 'air_date'])
-            .unique()
             .with_columns(
                 pl.col('air_date')
                 .str.extract(r', (\d{4})', 1)
@@ -121,7 +120,6 @@ class DataOperations:
                            legend=False,
                            data=data,
                            palette=rick_and_morty_palette)
-
 
         for p in plot.patches:
             plot.annotate(format(p.get_height(), '.0f'),
@@ -153,6 +151,6 @@ class DataOperations:
         episodes_per_year.write_csv(f'{main_dir}/episodes_per_year.csv')
 
         self.draw_bar_plot('Name', 'Appearances in episodes', appearances_in_episodes, 'TOP 5 characters appearances')
-        self.draw_bar_plot('Location', 'Characters per location', characters_per_location, 'TOP 5 inhabited locations')
+        self.draw_bar_plot('Location', 'Characters', characters_per_location, 'TOP 5 inhabited locations')
         self.draw_bar_plot('Season', 'Characters', characters_per_season, 'Characters per season')
         self.draw_bar_plot('Year', 'Episodes', episodes_per_year, 'Episodes per year')
