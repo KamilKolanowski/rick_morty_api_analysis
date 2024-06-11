@@ -1,10 +1,19 @@
-from APIConnector import APIConnector
 import matplotlib.pyplot as plt
 import seaborn as sns
 import polars as pl
+from APIConnector import APIConnector
 
 
 class DataOperations:
+    """ DataOperations Class
+
+        Performing ETL processes on Rick and Morty data
+        Retrieving data from API - APIConnector.py
+        Performing transformations using Polars
+        Saving data to files
+        Drawing plots using seaborn and matplotlib
+
+    """
     def __init__(self):
         self.api_conn = APIConnector()
         self.characters = self.get_dataframe('character')
@@ -13,9 +22,12 @@ class DataOperations:
         self.filtered_characters = self.filter_characters()
 
     def get_dataframe(self, endpoint):
+        """ Generic approach to retrieve data from API and save it in dataframe """
         return pl.DataFrame(self.api_conn.get_paginated_data(endpoint))
 
     def filter_characters(self):
+        """ Filter characters data for specific columns,
+        with exploding struct, and array columns """
         characters_data = self.characters
 
         characters_cols_list = ["id", "name", "status",
@@ -37,6 +49,7 @@ class DataOperations:
 
     @staticmethod
     def count_appearances_in_episodes(characters):
+        """ Counting how many times each character appeared in episodes """
         characters_in_episodes = (
                                   characters
                                   .select('name', 'episode')
@@ -52,6 +65,7 @@ class DataOperations:
 
     @staticmethod
     def get_joined_characters_episodes_locations(characters, episodes, location):
+        """ Joining all available tables into one full table """
         sel_list = ['name', 'status', 'species', 'gender', 'location',
                     pl.col('type').alias('location_type'), 'dimension',
                     pl.col('episode_right').alias('episode'), 'air_date']
@@ -70,6 +84,8 @@ class DataOperations:
 
     @staticmethod
     def get_no_of_characters_per_location(characters):
+        """ Get number of characters per each location
+            Limiting data to only 5 rows """
         return (
             characters
             .select('name', 'location')
@@ -83,6 +99,8 @@ class DataOperations:
 
     @staticmethod
     def get_no_of_characters_per_season(characters):
+        """ Get number of characters per each season
+                    Limiting data to only 5 rows """
         return (
             characters
             .select(['name', 'episode'])
@@ -96,6 +114,7 @@ class DataOperations:
 
     @staticmethod
     def get_no_of_episodes_per_year(episodes):
+        """ Get number of episodes per each year """
         return (
             episodes
             .select(['episode', 'air_date'])
@@ -111,7 +130,9 @@ class DataOperations:
 
     @staticmethod
     def draw_bar_plot(x_axis, y_axis, data, title):
-        rick_and_morty_palette = ['#FF7F50', '#87CEEB', '#ADFF2F', '#FFD700', '#DA70D6', '#8A2BE2', '#00FA9A']
+        """ Generic method to draw bar plot with Rick and Morty color palette """
+        rick_and_morty_palette = ['#FF7F50', '#87CEEB', '#ADFF2F',
+                                  '#FFD700', '#DA70D6', '#8A2BE2', '#00FA9A']
         data = data.to_pandas()
 
         plot = sns.barplot(x=x_axis,
@@ -133,11 +154,13 @@ class DataOperations:
         plt.show()
 
     def get_results(self):
+        """ Getting final results, saving them to files, and drawing bar plots """
         main_dir = '../results/csv_files'
 
-        characters_episodes_locations = self.get_joined_characters_episodes_locations(self.filtered_characters,
-                                                                                      self.episodes,
-                                                                                      self.locations)
+        characters_episodes_locations = (
+            self.get_joined_characters_episodes_locations(self.filtered_characters,
+                                                          self.episodes,
+                                                          self.locations))
 
         appearances_in_episodes = self.count_appearances_in_episodes(self.filtered_characters)
         characters_per_location = self.get_no_of_characters_per_location(self.filtered_characters)
@@ -150,7 +173,22 @@ class DataOperations:
         characters_per_season.write_csv(f'{main_dir}/characters_per_season.csv')
         episodes_per_year.write_csv(f'{main_dir}/episodes_per_year.csv')
 
-        self.draw_bar_plot('Name', 'Appearances in episodes', appearances_in_episodes, 'TOP 5 characters appearances')
-        self.draw_bar_plot('Location', 'Characters', characters_per_location, 'TOP 5 inhabited locations')
-        self.draw_bar_plot('Season', 'Characters', characters_per_season, 'Characters per season')
-        self.draw_bar_plot('Year', 'Episodes', episodes_per_year, 'Episodes per year')
+        self.draw_bar_plot('Name',
+                           'Appearances in episodes',
+                           appearances_in_episodes,
+                           'TOP 5 characters appearances')
+
+        self.draw_bar_plot('Location',
+                           'Characters',
+                           characters_per_location,
+                           'TOP 5 inhabited locations')
+
+        self.draw_bar_plot('Season',
+                           'Characters',
+                           characters_per_season,
+                           'Characters per season')
+
+        self.draw_bar_plot('Year',
+                           'Episodes',
+                           episodes_per_year,
+                           'Episodes per year')
